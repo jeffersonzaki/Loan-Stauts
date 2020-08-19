@@ -30,7 +30,7 @@ from sklearn.model_selection import train_test_split
 bank_df = pd.read_csv("Data/bank.csv")
 
 # Removing Loan ID and Customer ID columns and Years of Credit History
-bank_df.drop(columns=["Loan ID", "Customer ID", "Years of Credit History"], inplace=True)
+bank_df.drop(columns=["Years of Credit History"], axis=1, inplace=True)
 
 # Replacing Credit Score column to strings
 bank_df["Credit Score"] = bank_df["Credit Score"].astype("str")
@@ -83,8 +83,10 @@ bank_df = impute_num_df.join(impute_cat_df, how="left")
 # Dropping duplicated data
 bank_df.drop_duplicates(inplace=True)
 
+#----------------------------------------------
 
-# ---------------PCA-------------------
+
+# -------------------------PCA------------------------------
 # Independent and Dependent variables
 X = bank_df.drop(columns="Loan Status_Fully Paid", axis=1)
 y = bank_df["Loan Status_Fully Paid"]
@@ -107,4 +109,9 @@ reduced_pca = pca.fit_transform(X_train_rescaled, y_train)
 
 # Creating new dataset
 X_train_pca = pd.DataFrame(data=reduced_pca)
+# Adding PC as a prefix
+X_train_pca = X_train_pca.add_prefix("PC")
+
+#-------------------------------------------------------
+
 
