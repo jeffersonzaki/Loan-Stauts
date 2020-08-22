@@ -21,6 +21,9 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler  # Standardizatio
 # Train Test Split
 from sklearn.model_selection import train_test_split
 
+# Imbalance data
+from imblearn.over_sampling import SMOTE
+
 
 # ----------------------------
 
@@ -94,14 +97,18 @@ y = bank_df["Loan Status_Fully Paid"]
 # Train Test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=19)
 
+# Intantiating Synthetic Minority Over Sampling Technique to balance target variable
+sm = SMOTE(random_state=19)
+X_train_new, y_train_new = sm.fit_sample(X_train, y_train)
+
 # Normalizing data
 min_max_scaler = MinMaxScaler() # Values will be put in a range from 0 to 1
 # Using normalization because the machine learning models that will be used don't have any assumptions/requirements of the data being in a normal distribution
 # also some of our data are not in a Gaussian Distribution (Bell Curve/Normal Distribution)
 
 # Normalizing float64 columns to be put in a range of 0 to 1
-col_rescaled = min_max_scaler.fit_transform(X_train)
-X_train_rescaled = pd.DataFrame(data=col_rescaled, columns=X_train.columns)
+col_rescaled = min_max_scaler.fit_transform(X_train_new)
+X_train_rescaled = pd.DataFrame(data=col_rescaled, columns=X_train_new.columns)
 
 # Using PCA for dimension reduction
 pca = PCA(n_components=0.99, random_state=18)  # 99% variance/threshold
